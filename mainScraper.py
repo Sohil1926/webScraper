@@ -29,10 +29,27 @@ first_panel.click()
 venue_name_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "article-heading")))
 venue_name = venue_name_element.text
 
-# insert venue name into Airtable
+#short description
+short_description_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "markdown-content")))
+short_description = short_description_element.text
+
+#venue capacities
+venue_stats_elements = driver.find_elements(By.CLASS_NAME, "venue-stat-number")
+stats = [int(element.text.replace(',', '')) for element in venue_stats_elements if element.text.isdigit()]
+
+reception_capacity = stats[0] if len(stats) > 0 else 0
+seated_capacity = stats[1] if len(stats) > 1 else 0
+theatre_capacity = stats[2] if len(stats) > 2 else 0
+
+
+# insert values into Airtable
 data = {
     "fields": {
-        "Name": venue_name  # Ensure this matches the exact field label in Airtable
+        "Name": venue_name,
+        "Short Description": short_description,
+        "Reception Capacity": reception_capacity, 
+        "Seated Capacity": seated_capacity,
+        "Theatre Capacity": theatre_capacity
     }
 }
 response = requests.post(airtable_url, headers=headers, json=data)
@@ -41,8 +58,6 @@ if response.status_code == 200:
 else:
     print(f"Failed to add {venue_name} to Airtable. Status Code: {response.status_code}, Response: {response.text}")
 
-# Navigate back if necessary, or close the driver if done
 driver.quit()
 
-# Output the venue name
 print(f"Venue Name: {venue_name}")

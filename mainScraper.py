@@ -54,6 +54,10 @@ if len(info_items) >= 2:
 else:
     contact_name = "Contact name not found"
 
+#email address
+email_link_element = driver.find_element(By.XPATH, "//a[contains(@href, 'mailto:')]")
+email_address = email_link_element.get_attribute('href').replace('mailto:', '')
+
 #phone number
 contact_info_content = contact_name_element.text
 contact_info_lines = contact_info_content.split('\n')
@@ -72,6 +76,11 @@ else:
 venue_website_link_element = driver.find_element(By.XPATH, "//div[contains(., 'Venue Website')]/following-sibling::div/a")
 website = venue_website_link_element.get_attribute('href')
 
+#images
+image_elements = driver.find_elements(By.CSS_SELECTOR, "div.gallery-slide img")
+image_urls = [img.get_attribute('src') for img in image_elements]
+formatted_image_urls = [{"url": url} for url in image_urls]
+
 # insert values into Airtable
 data = {
     "fields": {
@@ -84,7 +93,9 @@ data = {
         "Contact Name": contact_name,
         "Phone Number": phone_number,
         "Longer Description": long_description,
-        "Website": website
+        "Website": website,
+        "Contact Email": email_address,
+        "Images": formatted_image_urls
     }
 }
 response = requests.post(airtable_url, headers=headers, json=data)
@@ -94,6 +105,5 @@ else:
     print(f"Failed to add {venue_name} to Airtable. Status Code: {response.status_code}, Response: {response.text}")
 
 driver.quit()
-
-# print("Data being sent to Airtable:", data)
+print("Data being sent to Airtable:", image_urls)
  

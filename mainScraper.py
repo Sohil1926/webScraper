@@ -6,20 +6,25 @@ from selenium.webdriver.support import expected_conditions as EC
 driver = webdriver.Chrome()
 driver.get("https://www.ggcatering.com/venues#?venue_type=corporate&page=4")
 
-# wait for the element to be clickable
 wait = WebDriverWait(driver, 10)
-panel = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "panel")))
+venue_names = []
 
-panel.click()
+# initial list of panels
+panels = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "panel")))
 
-venue_name_element = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.CLASS_NAME, "article-heading"))
-)
-venue_name = venue_name_element.text  
+for i in range(len(panels)):
+    panels = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "panel")))
+    panels[i].click()
 
+    # wait for the venue name to load on the new page
+    venue_name_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "article-heading")))
+    venue_names.append(venue_name_element.text)
 
-# Output
-print(f"Venue Name: {venue_name}")
+    # navigate back to main page
+    driver.back()
 
-# Close the browser when done
+# Output 
+for name in venue_names:
+    print(f"Venue Name: {name}")
+
 driver.quit()

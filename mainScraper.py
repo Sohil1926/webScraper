@@ -44,7 +44,7 @@ theatre_capacity = stats[2] if len(stats) > 2 else 0
 #address
 address_container = driver.find_element(By.CLASS_NAME, "venue-info-item-content")
 address_full = address_container.text.split('\n')
-address = " ".join(address_full[1:3])  # joins  second and third lines, skipping the venue name.
+address = " ".join(address_full[1:3])  # joins second and third lines, skipping the venue name.
 
 
 

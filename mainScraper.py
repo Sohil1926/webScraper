@@ -41,6 +41,12 @@ reception_capacity = stats[0] if len(stats) > 0 else 0
 seated_capacity = stats[1] if len(stats) > 1 else 0
 theatre_capacity = stats[2] if len(stats) > 2 else 0
 
+#address
+address_container = driver.find_element(By.CLASS_NAME, "venue-info-item-content")
+address_full = address_container.text.split('\n')
+address = " ".join(address_full[1:3])  # joins  second and third lines, skipping the venue name.
+
+
 
 # insert values into Airtable
 data = {
@@ -49,7 +55,8 @@ data = {
         "Short Description": short_description,
         "Reception Capacity": reception_capacity, 
         "Seated Capacity": seated_capacity,
-        "Theatre Capacity": theatre_capacity
+        "Theatre Capacity": theatre_capacity,
+        "Address": address
     }
 }
 response = requests.post(airtable_url, headers=headers, json=data)

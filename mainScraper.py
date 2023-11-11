@@ -68,6 +68,10 @@ if len(description_elements) >= 2:
 else:
     long_description = "Long description not found"
 
+#website
+venue_website_link_element = driver.find_element(By.XPATH, "//div[contains(., 'Venue Website')]/following-sibling::div/a")
+website = venue_website_link_element.get_attribute('href')
+
 # insert values into Airtable
 data = {
     "fields": {
@@ -79,7 +83,8 @@ data = {
         "Address": address,
         "Contact Name": contact_name,
         "Phone Number": phone_number,
-        "Longer Description": long_description
+        "Longer Description": long_description,
+        "Website": website
     }
 }
 response = requests.post(airtable_url, headers=headers, json=data)
@@ -90,5 +95,5 @@ else:
 
 driver.quit()
 
-print("Data being sent to Airtable:", data)
+# print("Data being sent to Airtable:", data)
  

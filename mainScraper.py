@@ -46,7 +46,27 @@ address_container = driver.find_element(By.CLASS_NAME, "venue-info-item-content"
 address_full = address_container.text.split('\n')
 address = " ".join(address_full[1:3])  # joins second and third lines, skipping the venue name.
 
+#contact name
+info_items = driver.find_elements(By.CLASS_NAME, "venue-info-item-content") #all containers with the same class
+if len(info_items) >= 2:
+    contact_name_element = info_items[1]  # second element with the class name
+    contact_name = contact_name_element.text.strip().split('\n')[0]  # Assuming name is the first line
+else:
+    contact_name = "Contact name not found"
 
+#phone number
+contact_info_content = contact_name_element.text
+contact_info_lines = contact_info_content.split('\n')
+phone_number = contact_info_lines[1].strip() if len(contact_info_lines) > 1 else "Phone number not found"
+
+#long description
+description_elements = driver.find_elements(By.CLASS_NAME, "markdown-content") #find all with same class
+
+if len(description_elements) >= 2:
+    long_description_element = description_elements[1]  # second element with the class name
+    long_description = long_description_element.text
+else:
+    long_description = "Long description not found"
 
 # insert values into Airtable
 data = {
@@ -56,7 +76,10 @@ data = {
         "Reception Capacity": reception_capacity, 
         "Seated Capacity": seated_capacity,
         "Theatre Capacity": theatre_capacity,
-        "Address": address
+        "Address": address,
+        "Contact Name": contact_name,
+        "Phone Number": phone_number,
+        "Longer Description": long_description
     }
 }
 response = requests.post(airtable_url, headers=headers, json=data)
@@ -67,4 +90,5 @@ else:
 
 driver.quit()
 
-print(f"Venue Name: {venue_name}")
+print("Data being sent to Airtable:", data)
+ 

@@ -6,10 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 # Airtable setup
-personal_access_token = 'patVnh56FVKpYUssq.46c740675ec2caf3ada99151efac8cb7870fa823fd67b2ee1d5bf3ce0fe257b4'
-base_id = 'app11Wk2b9AkAnoLx'
+personal_access_token = 'youraccesstoken'
+base_id = 'yourbaseid'
 table_name = 'Table 1'
-airtable_url = f"https://api.airtable.com/v0/app11Wk2b9AkAnoLx/Table%201"
+airtable_url = f"your url"
 
 headers = {
     "Authorization": f"Bearer {personal_access_token}",
